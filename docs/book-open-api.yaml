@@ -530,6 +530,9 @@ components:
           image:
             type: string
             format: binary
+          content:
+            type: string
+            
     BookSchemaCreate:
         type: object
         properties:   
@@ -542,12 +545,14 @@ components:
           year:
             type: integer
             example: 2022
+          content:
+            type: string
+            example: |
+              Key FeaturesThis third edition of the bestselling guide to advanced Go programming has been overhauled and expanded to cover RESTful servers, the WebSocket protocol, and Go genericsUse real-world exercises to build high-performance network servers and powerful command line utilitiesPacked with practical examples and utilities to apply to your own development work and administrative tasksGet clear explanations about Go nuances and features to simplify Go developmentBook Description
+              Mastering Go is the essential guide to putting Go to work on real production systems. This freshly updated third edition includes topics like creating RESTful servers and clients, understanding Go generics, and developing gRPC servers and clients.
           image:
             type: string
             format: binary
-          user_id:
-            type: integer
-            example: 1
     UsersSchemaLogin:
         type: object
         properties:
