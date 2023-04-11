@@ -178,6 +178,58 @@ paths:
       security:
         - bearerAuth : []
         - CSRFToken : []
+
+  /transaction/{id}:
+    get:
+      security:
+        - bearerAuth: []
+      summary: Show LendBooks By User ID
+      tags:
+        - Transactions
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        '200':
+          $ref: '#/components/responses/Response200AllBooks'
+        '400':
+          $ref: '#/components/responses/Response400'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/Response404'
+        '500':
+          $ref: '#/components/responses/Response500'
+  /transactions/{id}:
+    get:
+      security:
+        - bearerAuth: []
+      summary: Show Users that LendBook
+      tags:
+        - Transactions
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        '200':
+          $ref: '#/components/responses/Response200AllBooks'
+        '400':
+          $ref: '#/components/responses/Response400'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/Response404'
+        '500':
+          $ref: '#/components/responses/Response500'
+
 components:
   securitySchemes:
     bearerAuth:           
