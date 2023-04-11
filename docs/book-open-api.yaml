@@ -506,7 +506,7 @@ components:
               $ref: '#/components/schemas/UsersSchemaRegister'
     ReqUserUpdate:
         content:
-          application/json:
+          multipart/form-data:
             schema:
               $ref: '#/components/schemas/UsersSchemaUpdate'
     ReqTrxCreate:
@@ -571,7 +571,7 @@ components:
             example: satrio123
           image:
             type: string
-            format: base64
+            format: binary
           address:
             type: string
             example: bogor
@@ -583,10 +583,16 @@ components:
             example: satrio
           email:
             type: string
-            example: satrio@gmail.com         
+            example: satrio@gmail.com
+          image:
+            type: string
+            format: binary      
           password:
             type: string
             example: satrio
+          address:
+            type: string
+            example: bekasi
     TrxSchemaCreate:
         type: object
         properties:   
