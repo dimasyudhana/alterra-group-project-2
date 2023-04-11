@@ -60,12 +60,12 @@ paths:
      get:
       security:
         - bearerAuth: []
-      summary: Show My Books
+      summary: Show My Book
       tags:
         - Books
       responses:
         '200':
-          $ref: '#/components/responses/Response201BookCreate'
+          $ref: '#/components/responses/Response200GetBookById'
         '400':
           $ref: '#/components/responses/Response400'
         '401':
@@ -219,6 +219,22 @@ components:
             example:
               code: 201
               message: "Success create a book"
+    Response200GetBookById:
+      description: Success get a book
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: number                
+              message:
+                type: string                
+              data:
+                type: string
+            example:
+              code: 201
+              message: "Success get a book"
     Response200AllBooks:
       description: Success get all book
       content:
@@ -239,53 +255,73 @@ components:
                 - id: 1
                   title: Mastering Go to build professional utilities and concurrent servers and services
                   year: 2022
+                  description: Once upon a midnight ... 
                   image: source/image/Mastering Go to build professional utilities and concurrent servers and services.png
-                  user_id: 1
+                  status: available
+                  username: peterzalai
                 - id: 2
                   title: Mastering Go to build professional utilities and concurrent servers and services, 2nd Edition
                   year: 2023
+                  description: Once upon a midnight ...
                   image: source/image/Mastering Go to build professional utilities and concurrent servers and services, 2nd Edition.png
-                  user_id: 1
+                  status: rent
+                  username: carlo
                 - id: 3
                   title: CSRF Middleware
                   year: 2020
+                  description: Once upon a midnight ...
                   image: source/image/CSRF Middleware.png
-                  user_id: 2
+                  status: rent
+                  username: fundana
                 - id: 4
                   title: OpenAPI Guide
                   year: 2022
+                  description: Once upon a midnight ...
                   image: source/image/OpenAPI Guide.png
-                  user_id: 2
+                  status: rent
+                  username: carlo
                 - id: 5
                   title: Learn Python Programming the Easy and Fun Way
                   year: 2022
+                  description: Once upon a midnight ...
                   image: source/image/Learn Python Programming the Easy and Fun Way.png
-                  user_id: 1
+                  status: available
+                  username: fundana
                 - id: 6
                   title: Things That Matter; Three Decades of Passions, Pastimes and Politics
                   year: 2023
+                  description: Once upon a midnight ...
                   image: source/image/Things That Matter; Three Decades of Passions, Pastimes and Politics.png
-                  user_id: 1
+                  status: available
+                  username: Sato
                 - id: 7
                   title: CSRF Middleware
                   year: 2020
+                  description: Once upon a midnight ...
                   image: source/image/CSRF Middleware.png
-                  user_id: 2
+                  status: rent
+                  username: fundana
                 - id: 8
                   title: OpenAPI Guide
                   year: 2022
+                  description: Once upon a midnight ...
                   image: source/image/OpenAPI Guide.png
-                  user_id: 2
+                  status: available
+                  username: Sato
                 - id: 9
                   title: Go utilities and concurrent servers and services
                   year: 2022
+                  description: Once upon a midnight ...
                   image: source/image/Go utilities and concurrent servers and services.png
-                  user_id: 1
+                  status: available
+                  username: peterzalai
                 - id: 10
                   title: Go to build professional utilities and concurrent servers and services, 10th Edition
                   year: 2023
+                  description: Once upon a midnight ...
                   image: source/image/Go to build professional utilities and concurrent servers and services, 10th Edition.png
-                  user_id: 1
+                  status: available
+                  username: carlo
   
     Response200BookUpdate:
       description: Success remove a book
