@@ -179,20 +179,13 @@ paths:
         - bearerAuth : []
         - CSRFToken : []
 
-  /transaction/{id}:
+  /transaction:
     get:
       security:
         - bearerAuth: []
       summary: Show LendBooks By User ID
       tags:
         - Transactions
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
-            minimum: 1
       responses:
         '200':
           $ref: '#/components/responses/Response200AllBooks'
@@ -204,6 +197,27 @@ paths:
           $ref: '#/components/responses/Response404'
         '500':
           $ref: '#/components/responses/Response500'
+    post:
+      security:
+        - bearerAuth: []
+        - CSRFToken: []
+      tags:
+        - Transactions
+      summary: "Create a new transaction"
+      requestBody:
+        $ref: '#/components/requestBodies/ReqTrxCreate'
+      responses:
+         '200':
+          $ref: '#/components/responses/Response200Transaction'
+         '400':
+          $ref: '#/components/responses/Response400'
+         '401':
+          $ref: '#/components/responses/Unauthorized'
+         '500':
+          $ref: '#/components/responses/Response500'
+        
+
+      
   /transactions/{id}:
     get:
       security:
@@ -307,70 +321,70 @@ components:
                 - id: 1
                   title: Mastering Go to build professional utilities and concurrent servers and services
                   year: 2022
-                  description: Once upon a midnight ... 
+                  content: Once upon a midnight ... 
                   image: source/image/Mastering Go to build professional utilities and concurrent servers and services.png
                   status: available
                   username: peterzalai
                 - id: 2
                   title: Mastering Go to build professional utilities and concurrent servers and services, 2nd Edition
                   year: 2023
-                  description: Once upon a midnight ...
+                  content: Once upon a midnight ...
                   image: source/image/Mastering Go to build professional utilities and concurrent servers and services, 2nd Edition.png
                   status: rent
                   username: carlo
                 - id: 3
                   title: CSRF Middleware
                   year: 2020
-                  description: Once upon a midnight ...
+                  content: Once upon a midnight ...
                   image: source/image/CSRF Middleware.png
                   status: rent
                   username: fundana
                 - id: 4
                   title: OpenAPI Guide
                   year: 2022
-                  description: Once upon a midnight ...
+                  content: Once upon a midnight ...
                   image: source/image/OpenAPI Guide.png
                   status: rent
                   username: carlo
                 - id: 5
                   title: Learn Python Programming the Easy and Fun Way
                   year: 2022
-                  description: Once upon a midnight ...
+                  content: Once upon a midnight ...
                   image: source/image/Learn Python Programming the Easy and Fun Way.png
                   status: available
                   username: fundana
                 - id: 6
                   title: Things That Matter; Three Decades of Passions, Pastimes and Politics
                   year: 2023
-                  description: Once upon a midnight ...
+                  content: Once upon a midnight ...
                   image: source/image/Things That Matter; Three Decades of Passions, Pastimes and Politics.png
                   status: available
                   username: Sato
                 - id: 7
                   title: CSRF Middleware
                   year: 2020
-                  description: Once upon a midnight ...
+                  content: Once upon a midnight ...
                   image: source/image/CSRF Middleware.png
                   status: rent
                   username: fundana
                 - id: 8
                   title: OpenAPI Guide
                   year: 2022
-                  description: Once upon a midnight ...
+                  content: Once upon a midnight ...
                   image: source/image/OpenAPI Guide.png
                   status: available
                   username: Sato
                 - id: 9
                   title: Go utilities and concurrent servers and services
                   year: 2022
-                  description: Once upon a midnight ...
+                  content: Once upon a midnight ...
                   image: source/image/Go utilities and concurrent servers and services.png
                   status: available
                   username: peterzalai
                 - id: 10
                   title: Go to build professional utilities and concurrent servers and services, 10th Edition
                   year: 2023
-                  description: Once upon a midnight ...
+                  content: Once upon a midnight ...
                   image: source/image/Go to build professional utilities and concurrent servers and services, 10th Edition.png
                   status: available
                   username: carlo
@@ -452,6 +466,20 @@ components:
             example:
               code: 200
               message: "Success Updated Account"
+    Response200Transaction:
+      description: Successful Operation
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: number                
+              message:
+                type: string                
+            example:
+              code: 200
+              message: "Success created transaction"          
     Response400:
       description: Bad Request
       content:
@@ -513,8 +541,8 @@ components:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UsersSchemaUpdate'
-              example: Internal Server Error            
+              $ref: '#/components/schemas/TrxSchemaCreate'
+         
   
 
   schemas:
@@ -530,6 +558,9 @@ components:
           image:
             type: string
             format: binary
+          content:
+            type: string
+            
     BookSchemaCreate:
         type: object
         properties:   
@@ -542,12 +573,14 @@ components:
           year:
             type: integer
             example: 2022
+          content:
+            type: string
+            example: |
+              Key FeaturesThis third edition of the bestselling guide to advanced Go programming has been overhauled and expanded to cover RESTful servers, the WebSocket protocol, and Go genericsUse real-world exercises to build high-performance network servers and powerful command line utilitiesPacked with practical examples and utilities to apply to your own development work and administrative tasksGet clear explanations about Go nuances and features to simplify Go developmentBook Description
+              Mastering Go is the essential guide to putting Go to work on real production systems. This freshly updated third edition includes topics like creating RESTful servers and clients, understanding Go generics, and developing gRPC servers and clients.
           image:
             type: string
             format: binary
-          user_id:
-            type: integer
-            example: 1
     UsersSchemaLogin:
         type: object
         properties:
@@ -598,10 +631,6 @@ components:
         properties:   
           bookid:
             type: integer
-            example: satrio
-          email:
-            type: string
-            example: satrio@gmail.com         
-          password:
-            type: string
-            example: satrio
+            example: 
+              - bookid: 1
+              - bookid: 2
