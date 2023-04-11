@@ -190,7 +190,6 @@ components:
       in: header
       name: CSRFToken
       description: "Token obtained when accessing the GET HTTP method"
-
   responses:
     Unauthorized:
       description: Access token is missing or invalid
@@ -326,13 +325,17 @@ components:
               code:
                 type: number                
               message:
-                type: string                
-              token:
-                type: string
+                type: string   
+              data:
+                type: object
+                properties:    
+                  token:
+                    type: string
             example:
               code: 200
-              message: "Successful Operation"                 
-              token: "eyJhbGciOiJIzI1NiIsInR5cCI6IkpXVCJ9"
+              message: "Successful Operation"
+              data:                 
+                token: "eyJhbGciOiJIzI1NiIsInR5cCI6IkpXVCJ9"
     Response200Register:
       description: Successful Operation
       content:
@@ -410,7 +413,7 @@ components:
     ReqUserRegis:
         required: true
         content:
-          application/json:
+          multipart/form-data:
             schema:
               $ref: '#/components/schemas/UsersSchemaRegister'
     ReqUserUpdate:
@@ -423,6 +426,8 @@ components:
           application/json:
             schema:
               $ref: '#/components/schemas/UsersSchemaUpdate'
+              example: Internal Server Error            
+  
 
   schemas:
     BooksSchemaUpdate:
@@ -476,6 +481,9 @@ components:
           password:
             type: string
             example: satrio123
+          image:
+            type: string
+            format: base64
           address:
             type: string
             example: bogor
