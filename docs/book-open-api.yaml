@@ -1,0 +1,636 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: RentBookRestfulAPI
+  description: RentBook Endpoint List
+servers:
+  # Added by API Auto Mocking Plugin
+  - description: SwaggerHub API Auto Mocking
+    url: https://
+  - description: Production
+    url: https://
+  - description: Demo
+    url: http://public_ip
+  - description: Testing
+    url: https://localhost:8080
+paths:
+  /books:
+    post:
+      security:
+        - bearerAuth: []
+        - CSRFToken: []
+      summary: Create Book
+      tags:
+        - Books
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BookSchemaCreate'
+      responses:
+        '201':
+          $ref: '#/components/responses/Response201BookCreate'
+        '400':
+          $ref: '#/components/responses/Response400'
+        '401':
+          $ref: '#/components/responses/Unauthorized'  
+        '404':
+          $ref: '#/components/responses/Response404'
+        '500':
+          $ref: '#/components/responses/Response500'    
+    get:
+      security:
+        - bearerAuth: []
+      summary: Show All Books
+      tags:
+        - Books
+      responses:
+        '200':
+          $ref: '#/components/responses/Response200AllBooks'
+        '400':
+          $ref: '#/components/responses/Response400'
+        '401':
+          $ref: '#/components/responses/Unauthorized' 
+        '404':
+          $ref: '#/components/responses/Response404'
+        '500':
+          $ref: '#/components/responses/Response500'
+  /book:
+     get:
+      security:
+        - bearerAuth: []
+      summary: Show My Book
+      tags:
+        - Books
+      responses:
+        '200':
+          $ref: '#/components/responses/Response200GetBookById'
+        '400':
+          $ref: '#/components/responses/Response400'
+        '401':
+          $ref: '#/components/responses/Unauthorized' 
+        '404':
+          $ref: '#/components/responses/Response404'
+        '500':
+          $ref: '#/components/responses/Response500'
+  /books/{id}:
+     put:
+      security:
+        - bearerAuth: []
+        - CSRFToken: []
+      summary: Update MyBook By Book ID
+      tags:
+        - Books
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BooksSchemaUpdate'
+      responses:
+        '200':
+          $ref: '#/components/responses/Response200UpdateBook'
+        '400':
+          $ref: '#/components/responses/Response400'
+        '401':
+          $ref: '#/components/responses/Unauthorized'  
+        '404':
+          $ref: '#/components/responses/Response404'
+        '500':
+          $ref: '#/components/responses/Response500'
+     delete:
+      security:
+        - bearerAuth: []
+        - CSRFToken: []
+      summary: Delete MyBook By Book ID
+      tags:
+        - Books
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 1      
+      responses:
+        '200':
+          $ref: '#/components/responses/Response200BookUpdate'
+        '400':
+          $ref: '#/components/responses/Response400'
+        '401':
+          $ref: '#/components/responses/Unauthorized' 
+        '404':
+          $ref: '#/components/responses/Response404'
+        '500':
+          $ref: '#/components/responses/Response500'
+
+  /auth/login:
+    post:
+      tags:
+        - auth
+      summary: Endpoint Ketika User Login
+      requestBody: 
+         $ref: '#/components/requestBodies/ReqUser'
+      responses:
+        '200':
+          $ref: '#/components/responses/Response200Login'
+        '400':
+          $ref: '#/components/responses/Response400'
+        '500':
+          $ref: '#/components/responses/Response500'
+
+  /auth/register:
+    post:
+      tags:
+        - auth
+      summary: Register User
+      requestBody:
+        $ref: '#/components/requestBodies/ReqUserRegis'
+      responses:
+        '200':
+          $ref: '#/components/responses/Response200Register'  
+        '400':
+          $ref: '#/components/responses/Response400'
+        '500':
+          $ref: '#/components/responses/Response500'
+          
+  /users:
+    put:
+      tags:
+        - users
+      summary: "Update User"
+      requestBody:
+        $ref: '#/components/requestBodies/ReqUserUpdate'
+      responses:
+        '200':
+          $ref: '#/components/responses/Response200UserUpdate'
+        '400':
+          $ref: '#/components/responses/Response400'
+        '500':
+          $ref: '#/components/responses/Response500'
+      security:
+        - bearerAuth : []
+        - CSRFToken : []
+
+  /transaction:
+    get:
+      security:
+        - bearerAuth: []
+      summary: Show LendBooks By User ID
+      tags:
+        - Transactions
+      responses:
+        '200':
+          $ref: '#/components/responses/Response200AllBooks'
+        '400':
+          $ref: '#/components/responses/Response400'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/Response404'
+        '500':
+          $ref: '#/components/responses/Response500'
+    post:
+      security:
+        - bearerAuth: []
+        - CSRFToken: []
+      tags:
+        - Transactions
+      summary: "Create a new transaction"
+      requestBody:
+        $ref: '#/components/requestBodies/ReqTrxCreate'
+      responses:
+         '200':
+          $ref: '#/components/responses/Response200Transaction'
+         '400':
+          $ref: '#/components/responses/Response400'
+         '401':
+          $ref: '#/components/responses/Unauthorized'
+         '500':
+          $ref: '#/components/responses/Response500'
+        
+
+      
+  /transactions/{id}:
+    get:
+      security:
+        - bearerAuth: []
+      summary: Show Users that LendBook
+      tags:
+        - Transactions
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        '200':
+          $ref: '#/components/responses/Response200AllBooks'
+        '400':
+          $ref: '#/components/responses/Response400'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/Response404'
+        '500':
+          $ref: '#/components/responses/Response500'
+
+components:
+  securitySchemes:
+    bearerAuth:           
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: "Token obtained upon successful login"
+    CSRFToken:
+      type: apiKey
+      in: header
+      name: CSRFToken
+      description: "Token obtained when accessing the GET HTTP method"
+  responses:
+    Unauthorized:
+      description: Access token is missing or invalid
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: 
+                  code: 401
+                  message: Missing or Malformed JWT 
+    Response201BookCreate:
+      description: Success create a book
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: number                
+              message:
+                type: string                
+              data:
+                type: string
+            example:
+              code: 201
+              message: "Success create a book"
+    Response200GetBookById:
+      description: Success get a book
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: number                
+              message:
+                type: string                
+              data:
+                type: string
+            example:
+              code: 201
+              message: "Success get a book"
+    Response200AllBooks:
+      description: Success get all book
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: number                
+              message:
+                type: string                
+              data:
+                type: string
+            example:
+              code: 200
+              message: "Success get all book"                 
+              data: 
+                - id: 1
+                  title: Mastering Go to build professional utilities and concurrent servers and services
+                  year: 2022
+                  content: Once upon a midnight ... 
+                  image: source/image/Mastering Go to build professional utilities and concurrent servers and services.png
+                  status: available
+                  username: peterzalai
+                - id: 2
+                  title: Mastering Go to build professional utilities and concurrent servers and services, 2nd Edition
+                  year: 2023
+                  content: Once upon a midnight ...
+                  image: source/image/Mastering Go to build professional utilities and concurrent servers and services, 2nd Edition.png
+                  status: rent
+                  username: carlo
+                - id: 3
+                  title: CSRF Middleware
+                  year: 2020
+                  content: Once upon a midnight ...
+                  image: source/image/CSRF Middleware.png
+                  status: rent
+                  username: fundana
+                - id: 4
+                  title: OpenAPI Guide
+                  year: 2022
+                  content: Once upon a midnight ...
+                  image: source/image/OpenAPI Guide.png
+                  status: rent
+                  username: carlo
+                - id: 5
+                  title: Learn Python Programming the Easy and Fun Way
+                  year: 2022
+                  content: Once upon a midnight ...
+                  image: source/image/Learn Python Programming the Easy and Fun Way.png
+                  status: available
+                  username: fundana
+                - id: 6
+                  title: Things That Matter; Three Decades of Passions, Pastimes and Politics
+                  year: 2023
+                  content: Once upon a midnight ...
+                  image: source/image/Things That Matter; Three Decades of Passions, Pastimes and Politics.png
+                  status: available
+                  username: Sato
+                - id: 7
+                  title: CSRF Middleware
+                  year: 2020
+                  content: Once upon a midnight ...
+                  image: source/image/CSRF Middleware.png
+                  status: rent
+                  username: fundana
+                - id: 8
+                  title: OpenAPI Guide
+                  year: 2022
+                  content: Once upon a midnight ...
+                  image: source/image/OpenAPI Guide.png
+                  status: available
+                  username: Sato
+                - id: 9
+                  title: Go utilities and concurrent servers and services
+                  year: 2022
+                  content: Once upon a midnight ...
+                  image: source/image/Go utilities and concurrent servers and services.png
+                  status: available
+                  username: peterzalai
+                - id: 10
+                  title: Go to build professional utilities and concurrent servers and services, 10th Edition
+                  year: 2023
+                  content: Once upon a midnight ...
+                  image: source/image/Go to build professional utilities and concurrent servers and services, 10th Edition.png
+                  status: available
+                  username: carlo
+  
+    Response200BookUpdate:
+      description: Success remove a book
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: number                
+              message:
+                type: string
+            example:
+              code: 200
+              message: "Success remove a book"
+    Response200UpdateBook:
+      description: Success update book
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: number                
+              message:
+                type: string
+            example:
+              code: 200
+              message: "Success update book"
+    Response200Login:
+      description: Successful Operation
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: number                
+              message:
+                type: string   
+              data:
+                type: object
+                properties:    
+                  token:
+                    type: string
+            example:
+              code: 200
+              message: "Successful Operation"
+              data:                 
+                token: "eyJhbGciOiJIzI1NiIsInR5cCI6IkpXVCJ9"
+    Response200Register:
+      description: Successful Operation
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: number                
+              message:
+                type: string                
+            example:
+              code: 200
+              message: "Success Register" 
+    Response200UserUpdate:
+      description: Successful Operation
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: number                
+              message:
+                type: string                
+            example:
+              code: 200
+              message: "Success Updated Account"
+    Response200Transaction:
+      description: Successful Operation
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: number                
+              message:
+                type: string                
+            example:
+              code: 200
+              message: "Success created transaction"          
+    Response400:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: number
+                example: 400
+              message:
+                type: string
+                example: Bad Request
+    Response404:
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: number
+                example: 404
+              message:
+                type: string
+                example: Not Found
+    Response500:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: number
+                example: 500
+              message:
+                type: string
+                example: Internal Server Error
+  requestBodies:
+    ReqUser:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UsersSchemaLogin'
+    ReqUserRegis:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UsersSchemaRegister'
+    ReqUserUpdate:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UsersSchemaUpdate'
+    ReqTrxCreate:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TrxSchemaCreate'
+         
+  
+
+  schemas:
+    BooksSchemaUpdate:
+        type: object
+        properties:   
+          name:
+            type: string
+            example: Mastering Servers and Services
+          year:
+            type: integer
+            example: 2023
+          image:
+            type: string
+            format: binary
+          content:
+            type: string
+            
+    BookSchemaCreate:
+        type: object
+        properties:   
+          book_id:
+            type: integer
+            example: 1
+          title:
+            type: string
+            example: Mastering Go to build professional utilities and concurrent servers and services
+          year:
+            type: integer
+            example: 2022
+          content:
+            type: string
+            example: |
+              Key FeaturesThis third edition of the bestselling guide to advanced Go programming has been overhauled and expanded to cover RESTful servers, the WebSocket protocol, and Go genericsUse real-world exercises to build high-performance network servers and powerful command line utilitiesPacked with practical examples and utilities to apply to your own development work and administrative tasksGet clear explanations about Go nuances and features to simplify Go developmentBook Description
+              Mastering Go is the essential guide to putting Go to work on real production systems. This freshly updated third edition includes topics like creating RESTful servers and clients, understanding Go generics, and developing gRPC servers and clients.
+          image:
+            type: string
+            format: binary
+    UsersSchemaLogin:
+        type: object
+        properties:
+          email:
+            type: string
+            example: satrio@gmail.com                  
+          password:
+            type: string
+            example: satrio123
+    UsersSchemaRegister:
+        type: object
+        properties:
+          name:
+            type: string
+            example: Satrio
+          email:
+            type: string
+            example: satrio@gmail.com 
+          password:
+            type: string
+            example: satrio123
+          image:
+            type: string
+            format: binary
+          address:
+            type: string
+            example: bogor
+    UsersSchemaUpdate:
+        type: object
+        properties:   
+          name:
+            type: string
+            example: satrio
+          email:
+            type: string
+            example: satrio@gmail.com
+          image:
+            type: string
+            format: binary      
+          password:
+            type: string
+            example: satrio
+          address:
+            type: string
+            example: bekasi
+    TrxSchemaCreate:
+        type: object
+        properties:   
+          bookid:
+            type: integer
+            example: 
+              - bookid: 1
+              - bookid: 2
