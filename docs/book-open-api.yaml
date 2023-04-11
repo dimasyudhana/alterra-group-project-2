@@ -131,17 +131,65 @@ paths:
         '500':
           $ref: '#/components/responses/Response500'
 
+  /auth/login:
+    post:
+      tags:
+        - auth
+      summary: Endpoint Ketika User Login
+      requestBody: 
+         $ref: '#/components/requestBodies/ReqUser'
+      responses:
+        '200':
+          $ref: '#/components/responses/Response200Login'
+        '400':
+          $ref: '#/components/responses/Response400'
+        '500':
+          $ref: '#/components/responses/Response500'
+
+  /auth/register:
+    post:
+      tags:
+        - auth
+      summary: Register User
+      requestBody:
+        $ref: '#/components/requestBodies/ReqUserRegis'
+      responses:
+        '200':
+          $ref: '#/components/responses/Response200Register'  
+        '400':
+          $ref: '#/components/responses/Response400'
+        '500':
+          $ref: '#/components/responses/Response500'
+          
+  /users:
+    put:
+      tags:
+        - users
+      summary: "Update User"
+      requestBody:
+        $ref: '#/components/requestBodies/ReqUserUpdate'
+      responses:
+        '200':
+          $ref: '#/components/responses/Response200UserUpdate'
+        '400':
+          $ref: '#/components/responses/Response400'
+        '500':
+          $ref: '#/components/responses/Response500'
+      security:
+        - bearerAuth : []
+        - CSRFToken : []
 components:
   securitySchemes:
     bearerAuth:           
       type: http
       scheme: bearer
       bearerFormat: JWT
+      description: "Token obtained upon successful login"
     CSRFToken:
       type: apiKey
       in: header
       name: CSRFToken
-
+      description: "Token obtained when accessing the GET HTTP method"
   responses:
     Unauthorized:
       description: Access token is missing or invalid
@@ -267,6 +315,55 @@ components:
             example:
               code: 200
               message: "Success update book"
+    Response200Login:
+      description: Successful Operation
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: number                
+              message:
+                type: string   
+              data:
+                type: object
+                properties:    
+                  token:
+                    type: string
+            example:
+              code: 200
+              message: "Successful Operation"
+              data:                 
+                token: "eyJhbGciOiJIzI1NiIsInR5cCI6IkpXVCJ9"
+    Response200Register:
+      description: Successful Operation
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: number                
+              message:
+                type: string                
+            example:
+              code: 200
+              message: "Success Register" 
+    Response200UserUpdate:
+      description: Successful Operation
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: number                
+              message:
+                type: string                
+            example:
+              code: 200
+              message: "Success Updated Account"
     Response400:
       description: Bad Request
       content:
@@ -305,7 +402,32 @@ components:
                 example: 500
               message:
                 type: string
-                example: Internal Server Error            
+                example: Internal Server Error
+  requestBodies:
+    ReqUser:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UsersSchemaLogin'
+    ReqUserRegis:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UsersSchemaRegister'
+    ReqUserUpdate:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UsersSchemaUpdate'
+    ReqTrxCreate:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UsersSchemaUpdate'
+              example: Internal Server Error            
+  
 
   schemas:
     BooksSchemaUpdate:
@@ -338,3 +460,54 @@ components:
           user_id:
             type: integer
             example: 1
+    UsersSchemaLogin:
+        type: object
+        properties:
+          email:
+            type: string
+            example: satrio@gmail.com                  
+          password:
+            type: string
+            example: satrio123
+    UsersSchemaRegister:
+        type: object
+        properties:
+          name:
+            type: string
+            example: Satrio
+          email:
+            type: string
+            example: satrio@gmail.com 
+          password:
+            type: string
+            example: satrio123
+          image:
+            type: string
+            format: base64
+          address:
+            type: string
+            example: bogor
+    UsersSchemaUpdate:
+        type: object
+        properties:   
+          name:
+            type: string
+            example: satrio
+          email:
+            type: string
+            example: satrio@gmail.com         
+          password:
+            type: string
+            example: satrio
+    TrxSchemaCreate:
+        type: object
+        properties:   
+          bookid:
+            type: integer
+            example: satrio
+          email:
+            type: string
+            example: satrio@gmail.com         
+          password:
+            type: string
+            example: satrio
