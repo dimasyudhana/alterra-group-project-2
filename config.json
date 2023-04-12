@@ -1,7 +1,26 @@
 {
-    "Host": "",
-    "Port": "",
-    "Username": "",
-    "Password": "",
-    "Name": ""
+    "SERVER" : {
+    "PORT" : "8000"
+    },
+    "DATABASE":{
+        "HOST": "localhost",
+        "PORT": "3306",
+        "USERNAME": "root",
+        "PASSWORD": "",
+        "NAME": "project2"
+    },
+    "REDIS" : {
+        "HOST": "localhost",
+        "PORT": "3306",
+        "PASSWORD": "344",
+        "NAME": "231231"
+    },
+    "CSRFLENGTH": 20,
+    "CSRFMODE": "2",
+    "GCP": {
+        "CREDEN": "./credential/Auth.json",
+        "PROJECTID": "project2-383416",
+        "BUCKETNAME" : "prjropel",
+        "PATH": "user/"
+    }
 }
