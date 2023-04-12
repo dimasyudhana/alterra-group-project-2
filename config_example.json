@@ -1,0 +1,26 @@
+{
+    "SERVER" : {
+    "PORT" : "3306"
+    },
+    "DATABASE":{
+        "HOST": "local",
+        "PORT": "",
+        "USERNAME": "",
+        "PASSWORD": "",
+        "NAME": ""
+    },
+    "REDIS" : {
+        "HOST": "localhost",
+        "PORT": "3306",
+        "PASSWORD": "",
+        "NAME": "231231"
+    },
+    "CSRFLENGTH": 20,
+    "CSRFMODE": "2",
+    "GCP": {
+        "CREDEN": "",
+        "PROJECTID": "",
+        "BUCKETNAME" : "",
+        "PATH": ""
+    }
+}

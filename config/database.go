@@ -8,15 +8,16 @@ import (
 	"gorm.io/gorm"
 )
 
-func GetConnection(config Configuration) (*gorm.DB, error) {
+func GetConnection(c *Config) (*gorm.DB, error) {
 	dataSource := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
-		config.Username,
-		config.Password,
-		config.Host,
-		config.Port,
-		config.Name)
-
+		c.Database.Username,
+		c.Database.Password,
+		c.Database.Host,
+		c.Database.Port,
+		c.Database.Name,
+	)
 	db, err := gorm.Open(mysql.Open(dataSource), &gorm.Config{})
+
 	if err != nil {
 		return nil, fmt.Errorf("unable to connect to database: %v", err)
 	}
