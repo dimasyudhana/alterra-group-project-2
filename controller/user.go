@@ -69,6 +69,28 @@ func (u *User) GetById(c echo.Context) error {
 	}{Csrf: c.Get("csrf").(string), Data: user}
 	if err1 != nil {
 		u.Dep.Log.Errorf("Controller : %v", err1)
+		if _, ok := err1.(err.BadRequest); ok {
+			return c.JSON(http.StatusBadRequest, helper.CreateWebResponse(http.StatusBadRequest, "Bad Request", nil))
+		} else {
+			return c.JSON(http.StatusInternalServerError, helper.CreateWebResponse(http.StatusInternalServerError, "Status Internal Error", nil))
+		}
+	}
+	return c.JSON(http.StatusOK, helper.CreateWebResponse(http.StatusOK, "Successful Operation", res))
+}
+func (u *User) Update(c echo.Context) error {
+	var req entities.UserReqUpdate
+	uid := helper.GetUid(c.Get("user").(*jwt.Token))
+	if err1 := c.Bind(&req); err1 != nil {
+		c.Logger().Errorf("Error: %v", err1)
+		return c.JSON(http.StatusBadRequest, helper.CreateWebResponse(http.StatusBadRequest, "Bad Request", nil))
+	}
+	file, err1 := c.FormFile("image")
+	if err1 != nil {
+		u.Dep.Log.Errorf("Controller : %v", err1)
+		return c.JSON(http.StatusBadRequest, helper.CreateWebResponse(http.StatusBadRequest, "Bad Request", nil))
+	}
+	if err1 := u.Service.Update(c.Request().Context(), req, file, uid); err1 != nil {
+		u.Dep.Log.Errorf("Controller : %v", err1)
 		if err1, ok := err1.(err.BadRequest); ok {
 			u.Dep.Log.Errorf("Controller : %v", err1)
 			return c.JSON(http.StatusBadRequest, helper.CreateWebResponse(http.StatusBadRequest, err1.Error(), nil))
@@ -76,6 +98,6 @@ func (u *User) GetById(c echo.Context) error {
 			return c.JSON(http.StatusInternalServerError, helper.CreateWebResponse(http.StatusInternalServerError, "Internal Server Error", nil))
 		}
 	}
-	return c.JSON(http.StatusOK, helper.CreateWebResponse(http.StatusOK, "Successful Operation", res))
 
+	return c.JSON(http.StatusCreated, helper.CreateWebResponse(http.StatusCreated, "Successful Operation", nil))
 }

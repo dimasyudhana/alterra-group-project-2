@@ -1,13 +1,13 @@
 {
     "SERVER" : {
-    "PORT" : "7777"
+    "PORT" : "8888"
     },
     "DATABASE":{
         "HOST": "localhost",
         "PORT": "3306",
         "USERNAME": "root",
-        "PASSWORD": "@Pilotjhon18",
-        "NAME": "testing"
+        "PASSWORD": "",
+        "NAME": "project2"
     },
     "REDIS" : {
         "HOST": "localhost",
@@ -18,9 +18,9 @@
     "CSRFLENGTH": 20,
     "CSRFMODE": "2",
     "GCP": {
-        "CREDEN": "./auth.json",
-        "PROJECTID": "latihan-383107",
-        "BUCKETNAME" : "grouproject",
-        "PATH": "book/"
+        "CREDEN": "./credential/Auth.json",
+        "PROJECTID": "project2-383416",
+        "BUCKETNAME" : "prj1ropel",
+        "PATH": "user/"
     }
 }
