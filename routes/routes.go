@@ -36,6 +36,7 @@ func (r *Routes) RegisterRoutes() {
 	ro.Use(middleware.CORS())
 	ro.Use(middleware.Logger())
 	ro.POST("/auth/login", r.User.Login)
+	ro.POST("/auth/register", r.User.Register)
 	/// Auth
 	rauth := ro.Group("", middleware.JWT([]byte(r.Depend.Config.JwtSecret)), middleware.CSRFWithConfig(middleware.CSRFConfig{TokenLength: uint8(r.Depend.Config.CSRFLength)}))
 	rauth.POST("/books", r.Book.InsertBook, r.CSRFMiddlewareCustom)           //, middleware.JWT([]byte(config.JWTSecret)))

@@ -5,6 +5,7 @@ import (
 
 	dependecy "github.com/dimasyudhana/alterra-group-project-2/config/dependcy"
 	"github.com/dimasyudhana/alterra-group-project-2/entities"
+	"github.com/dimasyudhana/alterra-group-project-2/err"
 	errr "github.com/dimasyudhana/alterra-group-project-2/err"
 	"github.com/dimasyudhana/alterra-group-project-2/helper"
 	"github.com/dimasyudhana/alterra-group-project-2/service/user"
@@ -32,4 +33,25 @@ func (u *User) Login(c echo.Context) error {
 	}
 	token := helper.GenerateJWT(id, u.Dep)
 	return c.JSON(http.StatusOK, helper.CreateWebResponse(http.StatusOK, "Successful Operation", map[string]interface{}{"Token": token}))
+}
+
+func (u *User) Register(c echo.Context) error {
+	var req entities.UserReqRegister
+	if err1 := c.Bind(&req); err1 != nil {
+		c.Logger().Errorf("Error: %v", err1)
+		return c.JSON(http.StatusBadRequest, helper.CreateWebResponse(http.StatusBadRequest, "Bad Request", nil))
+	}
+	file, err1 := c.FormFile("image")
+	if err1 != nil {
+		u.Dep.Log.Errorf("Controller : %v", err1)
+		return c.JSON(http.StatusBadRequest, helper.CreateWebResponse(http.StatusBadRequest, "Bad Request", nil))
+	}
+	if err1 := u.Service.Register(c.Request().Context(), req, file); err1 != nil {
+		if err1, ok := err1.(err.BadRequest); ok {
+			return c.JSON(http.StatusBadRequest, helper.CreateWebResponse(http.StatusBadRequest, err1.Error(), nil))
+		} else {
+			return c.JSON(http.StatusInternalServerError, helper.CreateWebResponse(http.StatusInternalServerError, "Internal Server Error", nil))
+		}
+	}
+	return c.JSON(http.StatusCreated, helper.CreateWebResponse(http.StatusCreated, "Successful Operation", nil))
 }
