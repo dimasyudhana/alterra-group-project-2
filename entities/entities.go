@@ -21,11 +21,11 @@ type (
 		Address  string `form:"address" validate:"required"`
 	}
 	UserReqUpdate struct {
-		Name     string `json:"name"`
-		Email    string `json:"email"`
-		Password string `json:"password"`
-		Image    string `json:"image" `
-		Address  string `json:"address" `
+		Name     string `form:"name" validate:"required"`
+		Email    string `form:"email" validate:"required"`
+		Password string `form:"password" validate:"required"`
+		Image    string ``
+		Address  string `form:"address" validate:"required"`
 	}
 	WebResponse struct {
 		Code    int    `json:"code"`

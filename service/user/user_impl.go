@@ -112,5 +112,58 @@ func (u *user) GetById(ctx context.Context, id int) (*entities.User, error) {
 	}
 
 	return user, nil
+}
 
+func (u *user) Update(ctx context.Context, req entities.UserReqUpdate, filehead *multipart.FileHeader, id int) error {
+	if err1 := u.validator.Struct(req); err1 != nil {
+		u.dep.Log.Errorf("Error Service : %v", err1)
+		return err.NewErr(err1.Error())
+	}
+	userd, err1 := u.repo.FindByEmail(u.dep.Db.WithContext(ctx), req.Email)
+	if err1 != nil {
+		if !errors.Is(err1, gorm.ErrRecordNotFound) {
+			u.dep.Log.Errorf("Error Service : %v", err1)
+			return err.NewErrInter("Gagal mencari data user")
+		}
+	}
+	if userd.Id != 0 {
+		return err.NewErr("Email sudah terdaftar!!!")
+	}
+	if userd.Password != req.Password {
+		passhash, err1 := helper.HashPassword(req.Password)
+		if err1 != nil {
+			u.dep.Log.Errorf("Error Service : %v", err1)
+			return err.NewErr("Gagal membuat akun")
+		}
+		req.Password = passhash
+	}
+	if filehead.Filename != req.Image {
+		file, err1 := filehead.Open()
+		defer file.Close()
+		if err1 != nil {
+			u.dep.Log.Errorf("failed to open file", err1)
+			return err.NewErr("gagal memuat gambar")
+		}
+		filename := fmt.Sprintf("%s_%s", "User", filehead.Filename)
+
+		if err1 := u.dep.Gcp.UploadFile(file, filename); err1 != nil {
+			log.Print(err1)
+			u.dep.Log.Errorf("Error Service : %v", err1)
+			return err.NewErr("Gagal membuat pada saat mengupload gambar")
+		}
+		req.Image = filename
+	}
+	user := entities.User{
+		Id:       uint(id),
+		Name:     req.Name,
+		Email:    req.Email,
+		Password: req.Password,
+		Image:    req.Image,
+		Address:  req.Address,
+	}
+	if err1 := u.repo.Update(u.dep.Db.WithContext(ctx), user); err1 != nil {
+		u.dep.Log.Errorf("Error Service : %v", err1)
+		return err.NewErrInter("Terjadi kesalahan pada server")
+	}
+	return nil
 }
