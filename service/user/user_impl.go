@@ -34,16 +34,21 @@ func (u *user) Login(ctx context.Context, req entities.UserReqLogin) (error, int
 		return err.NewErr(err1.Error()), 0
 	}
 	user, err1 := u.repo.FindByEmail(u.dep.Db.WithContext(ctx), req.Email)
-	if errors.Is(err1, gorm.ErrRecordNotFound) {
-		return err.NewErr(err1.Error()), 0
+	if user == nil || user.Email == "" {
+		return err.NewErr("Email belum Terdaftar"), 0
 	}
-	if !errors.Is(err1, gorm.ErrRecordNotFound) {
-		return err1, 0
+	if err1 != nil {
+		if errors.Is(err1, gorm.ErrRecordNotFound) || user.Id == 0 {
+			return err.NewErr(err1.Error()), 0
+		}
+		if !errors.Is(err1, gorm.ErrRecordNotFound) {
+			return err1, 0
+		}
 	}
-	if err1 := helper.VerifyPassword(user.Password, req.Password); err1 != nil {
+	if err2 := helper.VerifyPassword(user.Password, req.Password); err2 != nil {
 		return err.NewErr("Password Salah"), 0
 	}
-	return nil, user.Id
+	return nil, int(user.Id)
 }
 
 func (u *user) Register(ctx context.Context, req entities.UserReqRegister, filehead *multipart.FileHeader) error {
@@ -91,4 +96,21 @@ func (u *user) Register(ctx context.Context, req entities.UserReqRegister, fileh
 		return err.NewErrInter("Terjadi kesalahan pada server")
 	}
 	return nil
+}
+
+func (u *user) GetById(ctx context.Context, id int) (*entities.User, error) {
+
+	user, err1 := u.repo.FindById(u.dep.Db.WithContext(ctx), id)
+	if err1 != nil {
+		if !errors.Is(err1, gorm.ErrRecordNotFound) {
+			u.dep.Log.Errorf("Error Service : %v", err1)
+			return nil, err.NewErrInter("Gagal mencari data user")
+		}
+	}
+	if user.Id == 0 {
+		return nil, errors.New("Id tidak terdaftar")
+	}
+
+	return user, nil
+
 }
