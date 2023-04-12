@@ -19,11 +19,11 @@ type BookModel struct {
 	validator *validator.Validate
 }
 
-func New(repo book.Repository, dep dependecy.Depend, val *validator.Validate) Service {
+func New(repo book.Repository, dep dependecy.Depend) Service {
 	return &BookModel{
 		repo:      repo,
 		dep:       dep,
-		validator: val,
+		validator: validator.New(),
 	}
 }
 

@@ -17,7 +17,7 @@ type StorageGCP struct {
 }
 
 func (s *StorageGCP) UploadFile(file multipart.File, fileName string) error {
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*20)
 	defer cancel()
 	wc := s.ClG.Bucket(s.BucketName).Object(s.Path + fileName).NewWriter(ctx)
 	if _, err := io.Copy(wc, file); err != nil {
