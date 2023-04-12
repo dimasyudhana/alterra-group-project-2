@@ -8,7 +8,6 @@ import (
 
 	"github.com/dimasyudhana/alterra-group-project-2/entities"
 	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
 )
 
 type Routes struct {
