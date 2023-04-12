@@ -3,7 +3,6 @@ package entities
 import (
 	"time"
 
-	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"
 )
 
@@ -15,30 +14,6 @@ type Core struct {
 	Contents string
 	Image    string
 	Username string
-}
-
-type Handler interface {
-	InsertBook() echo.HandlerFunc
-	GetAllBooks() echo.HandlerFunc
-	GetBookByBookID() echo.HandlerFunc
-	UpdateByBookID() echo.HandlerFunc
-	DeleteByBookID() echo.HandlerFunc
-}
-
-type Service interface {
-	InsertBook(book Core) (Core, error)
-	GetAllBooks() ([]Core, error)
-	GetBookByBookID(bookID uint) (Core, error)
-	UpdateByBookID(bookID uint, updatedBook Book) error
-	DeleteByBookID(bookID uint) error
-}
-
-type Repository interface {
-	InsertBook(book Core) (Core, error)
-	GetAllBooks() ([]Core, error)
-	GetBookByBookID(bookID uint) (Core, error)
-	UpdateByBookID(bookID uint, updatedBook Book) error
-	DeleteByBookID(bookID uint) error
 }
 
 type Book struct {

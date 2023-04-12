@@ -2,10 +2,12 @@ package helper
 
 import (
 	"log"
+	"net/http"
 
 	dependecy "github.com/dimasyudhana/alterra-group-project-2/config/dependcy"
 	"github.com/dimasyudhana/alterra-group-project-2/entities"
 	"github.com/golang-jwt/jwt"
+	"github.com/labstack/echo/v4"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -43,4 +45,13 @@ func GenerateJWT(id int, dp dependecy.Depend) string {
 		return ""
 	}
 	return resultToken
+}
+
+func DeleteCookieCSRF(c echo.Context) {
+	deletecookie := &http.Cookie{
+		Name:   "_csrf",
+		Path:   "/",
+		MaxAge: -1,
+	}
+	c.SetCookie(deletecookie)
 }

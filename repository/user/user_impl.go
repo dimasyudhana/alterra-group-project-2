@@ -23,7 +23,7 @@ func (u *user) Create(db *gorm.DB, req entities.User) error {
 }
 func (u *user) FindByEmail(db *gorm.DB, email string) (*entities.User, error) {
 	var user entities.User
-	if err := db.Where("email = ?", email).First(&user).Error; err != nil {
+	if err := db.Where("email = ?", email).Find(&user).Error; err != nil {
 		u.dep.Log.Errorf("Error %v", err)
 		return nil, err
 	}

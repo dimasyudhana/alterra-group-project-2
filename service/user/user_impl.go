@@ -30,7 +30,7 @@ func (u *user) Login(ctx context.Context, req entities.UserReqLogin) (error, int
 	if err1 := u.validator.Struct(req); err1 != nil {
 		return err.NewErr(err1.Error()), 0
 	}
-	user, err1 := u.repo.FindByEmail(u.dep.Db, req.Email)
+	user, err1 := u.repo.FindByEmail(u.dep.Db.WithContext(ctx), req.Email)
 	if errors.Is(err1, gorm.ErrRecordNotFound) {
 		return err.NewErr(err1.Error()), 0
 	}

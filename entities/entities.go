@@ -17,7 +17,7 @@ type (
 		Name     string `form:"name" validate:"required"`
 		Email    string `form:"email" validate:"required"`
 		Password string `form:"password" validate:"required"`
-		Image    string `form:"image" validate:"required"`
+		Image    string
 		Address  string `form:"address" validate:"required"`
 	}
 	UserReqUpdate struct {

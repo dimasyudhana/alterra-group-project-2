@@ -6,21 +6,20 @@ import (
 	"log"
 	"time"
 
+	dependecy "github.com/dimasyudhana/alterra-group-project-2/config/dependcy"
 	"github.com/dimasyudhana/alterra-group-project-2/entities"
 	"gorm.io/gorm"
 )
 
 type BookModel struct {
-	db *gorm.DB
+	dep dependecy.Depend
 }
 
-func New(d *gorm.DB) entities.Repository {
-	return &BookModel{
-		db: d,
-	}
+func New() Repository {
+	return &BookModel{}
 }
 
-func (bm *BookModel) InsertBook(book entities.Core) (entities.Core, error) {
+func (bm *BookModel) InsertBook(db *gorm.DB, book entities.Core) (entities.Core, error) {
 	var insertBook entities.Book
 	insertBook.Title = book.Title
 	insertBook.Year = book.Year
@@ -28,7 +27,7 @@ func (bm *BookModel) InsertBook(book entities.Core) (entities.Core, error) {
 	insertBook.Contents = book.Contents
 	insertBook.Image = []byte(book.Image)
 
-	err := bm.db.Table("books").Create(&insertBook).Error
+	err := db.Table("books").Create(&insertBook).Error
 	if err != nil {
 		log.Println("Terjadi error saat membuat daftar buku baru", err.Error())
 		return entities.Core{}, err
@@ -36,9 +35,9 @@ func (bm *BookModel) InsertBook(book entities.Core) (entities.Core, error) {
 	return book, nil
 }
 
-func (bm *BookModel) GetAllBooks() ([]entities.Core, error) {
+func (bm *BookModel) GetAllBooks(db *gorm.DB) ([]entities.Core, error) {
 	var books []entities.Book
-	if err := bm.db.Table("books").Where("deleted_at < ?", 0).Find(&books).Error; err != nil {
+	if err := db.Table("books").Where("deleted_at < ?", 0).Find(&books).Error; err != nil {
 		log.Println("Terjadi error saat mengambil daftar buku", err.Error())
 		return nil, err
 	}
@@ -58,9 +57,9 @@ func (bm *BookModel) GetAllBooks() ([]entities.Core, error) {
 	return cores, nil
 }
 
-func (bm *BookModel) GetBookByBookID(bookID uint) (entities.Core, error) {
+func (bm *BookModel) GetBookByBookID(db *gorm.DB, bookID uint) (entities.Core, error) {
 	var book entities.Book
-	if err := bm.db.Table("books").Where("id = ? AND deleted_at < ?", bookID, 0).First(&book).Error; err != nil {
+	if err := db.Table("books").Where("id = ? AND deleted_at < ?", bookID, 0).First(&book).Error; err != nil {
 		log.Println("Terjadi error saat mengambil buku dengan ID", bookID, err.Error())
 		return entities.Core{}, err
 	}
@@ -77,12 +76,12 @@ func (bm *BookModel) GetBookByBookID(bookID uint) (entities.Core, error) {
 	return core, nil
 }
 
-func (um *BookModel) UpdateByBookID(bookID uint, updatedBook entities.Book) error {
+func (um *BookModel) UpdateByBookID(db *gorm.DB, bookID uint, updatedBook entities.Book) error {
 	book := entities.Book{}
 	if bookID == 0 {
 		return fmt.Errorf("Terjadi kesalahan input ID")
 	}
-	if err := um.db.First(&book, bookID).Error; err != nil {
+	if err := db.First(&book, bookID).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return fmt.Errorf("ID buku %v tidak ditemukan", bookID)
 		}
@@ -97,7 +96,7 @@ func (um *BookModel) UpdateByBookID(bookID uint, updatedBook entities.Book) erro
 	book.Image = updatedBook.Image
 	book.UpdatedAt = time.Now()
 
-	if err := um.db.Save(&book).Error; err != nil {
+	if err := db.Save(&book).Error; err != nil {
 		log.Println("Terjadi error saat melakukan update daftar buku", err)
 		return err
 	}
@@ -105,12 +104,12 @@ func (um *BookModel) UpdateByBookID(bookID uint, updatedBook entities.Book) erro
 	return nil
 }
 
-func (um *BookModel) DeleteByBookID(bookID uint) error {
+func (um *BookModel) DeleteByBookID(db *gorm.DB, bookID uint) error {
 	book := entities.Book{}
 	if bookID == 0 {
 		return fmt.Errorf("Terjadi kesalahan input ID")
 	}
-	if err := um.db.First(&book, bookID).Error; err != nil {
+	if err := db.First(&book, bookID).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return fmt.Errorf("ID buku %v tidak ditemukan", bookID)
 		}
@@ -120,7 +119,7 @@ func (um *BookModel) DeleteByBookID(bookID uint) error {
 
 	book.DeletedAt = gorm.DeletedAt{Time: time.Now(), Valid: true}
 
-	if err := um.db.Save(&book).Error; err != nil {
+	if err := db.Save(&book).Error; err != nil {
 		log.Println("Terjadi error saat melakukan delete buku", err)
 		return err
 	}
