@@ -11,8 +11,11 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-func GenerateToken() {
+func GetUid(token *jwt.Token) int {
+	parse := token.Claims.(jwt.MapClaims)
+	id := int(parse["id"].(float64))
 
+	return id
 }
 
 func HashPassword(password string) (string, error) {

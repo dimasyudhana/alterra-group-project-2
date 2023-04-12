@@ -2,7 +2,7 @@ package entities
 
 type (
 	User struct {
-		Id       int    `json:"-" gorm:"primaryKey;autoIncrement"`
+		Id       uint   `json:"-" gorm:"type:int;primaryKey;autoIncrement"`
 		Name     string `json:"name" gorm:"type:varchar(50);not null"`
 		Email    string `json:"email" gorm:"type:varchar(50);not null"`
 		Password string `json:"password" gorm:"type:varchar(80);not null"`

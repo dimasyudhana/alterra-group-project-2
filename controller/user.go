@@ -9,6 +9,7 @@ import (
 	errr "github.com/dimasyudhana/alterra-group-project-2/err"
 	"github.com/dimasyudhana/alterra-group-project-2/helper"
 	"github.com/dimasyudhana/alterra-group-project-2/service/user"
+	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"
 	"go.uber.org/dig"
 )
@@ -26,7 +27,9 @@ func (u *User) Login(c echo.Context) error {
 	}
 	err, id := u.Service.Login(c.Request().Context(), req)
 	if err != nil {
+		u.Dep.Log.Errorf("Controller : %v", err)
 		if err2, ok := err.(errr.BadRequest); ok {
+			u.Dep.Log.Errorf("Controller : %v", err2)
 			return c.JSON(http.StatusBadRequest, helper.CreateWebResponse(http.StatusBadRequest, err2.Error(), nil))
 		}
 		return c.JSON(http.StatusInternalServerError, helper.CreateWebResponse(http.StatusInternalServerError, err.Error(), nil))
@@ -38,7 +41,7 @@ func (u *User) Login(c echo.Context) error {
 func (u *User) Register(c echo.Context) error {
 	var req entities.UserReqRegister
 	if err1 := c.Bind(&req); err1 != nil {
-		c.Logger().Errorf("Error: %v", err1)
+		u.Dep.Log.Errorf("Controller : %v", err1)
 		return c.JSON(http.StatusBadRequest, helper.CreateWebResponse(http.StatusBadRequest, "Bad Request", nil))
 	}
 	file, err1 := c.FormFile("image")
@@ -48,10 +51,31 @@ func (u *User) Register(c echo.Context) error {
 	}
 	if err1 := u.Service.Register(c.Request().Context(), req, file); err1 != nil {
 		if err1, ok := err1.(err.BadRequest); ok {
+			u.Dep.Log.Errorf("Controller : %v", err1)
 			return c.JSON(http.StatusBadRequest, helper.CreateWebResponse(http.StatusBadRequest, err1.Error(), nil))
 		} else {
 			return c.JSON(http.StatusInternalServerError, helper.CreateWebResponse(http.StatusInternalServerError, "Internal Server Error", nil))
 		}
 	}
 	return c.JSON(http.StatusCreated, helper.CreateWebResponse(http.StatusCreated, "Successful Operation", nil))
+}
+
+func (u *User) GetById(c echo.Context) error {
+	uid := helper.GetUid(c.Get("user").(*jwt.Token))
+	user, err1 := u.Service.GetById(c.Request().Context(), uid)
+	var res = struct {
+		Csrf string
+		Data any
+	}{Csrf: c.Get("csrf").(string), Data: user}
+	if err1 != nil {
+		u.Dep.Log.Errorf("Controller : %v", err1)
+		if err1, ok := err1.(err.BadRequest); ok {
+			u.Dep.Log.Errorf("Controller : %v", err1)
+			return c.JSON(http.StatusBadRequest, helper.CreateWebResponse(http.StatusBadRequest, err1.Error(), nil))
+		} else {
+			return c.JSON(http.StatusInternalServerError, helper.CreateWebResponse(http.StatusInternalServerError, "Internal Server Error", nil))
+		}
+	}
+	return c.JSON(http.StatusOK, helper.CreateWebResponse(http.StatusOK, "Successful Operation", res))
+
 }

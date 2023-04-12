@@ -10,4 +10,5 @@ import (
 type UserServiceInterface interface {
 	Login(ctx context.Context, req entities.UserReqLogin) (error, int)
 	Register(ctx context.Context, req entities.UserReqRegister, filehead *multipart.FileHeader) error
+	GetById(ctx context.Context, id int) (*entities.User, error)
 }

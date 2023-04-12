@@ -44,5 +44,6 @@ func (r *Routes) RegisterRoutes() {
 	rauth.GET("/books/:id", r.Book.GetBookByBookID)                           //, middleware.JWT([]byte(config.JWTSecret)))
 	rauth.PUT("/books/:id", r.Book.UpdateByBookID, r.CSRFMiddlewareCustom)    //, middleware.JWT([]byte(config.JWTSecret)))
 	rauth.DELETE("/books/:id", r.Book.DeleteByBookID, r.CSRFMiddlewareCustom) //, middleware.JWT([]byte(config.JWTSecret)))
-
+	/// User Area
+	rauth.GET("/users", r.User.GetById)
 }
