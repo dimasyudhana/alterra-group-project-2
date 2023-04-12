@@ -5,6 +5,10 @@ import (
 	"github.com/dimasyudhana/alterra-group-project-2/controller"
 	"github.com/labstack/echo/v4/middleware"
 	"go.uber.org/dig"
+
+	"github.com/dimasyudhana/alterra-group-project-2/entities"
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 )
 
 type Routes struct {
@@ -18,9 +22,7 @@ func (r *Routes) RegisterRoutes() {
 	ro.Use(middleware.RemoveTrailingSlash())
 	ro.Use(middleware.CORS())
 	ro.POST("/auth/login", r.Controller.Login)
-	"github.com/dimasyudhana/alterra-group-project-2/entities"
-	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
+
 }
 
 func Route(e *echo.Echo, bc entities.Handler) {
