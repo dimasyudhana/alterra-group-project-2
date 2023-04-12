@@ -35,4 +35,27 @@ func main() {
 		log.Print(err)
 	}
 
+	"github.com/dimasyudhana/alterra-group-project-2/config"
+	bookHandler "github.com/dimasyudhana/alterra-group-project-2/controller"
+	bookRepo "github.com/dimasyudhana/alterra-group-project-2/repository/book"
+	"github.com/dimasyudhana/alterra-group-project-2/routes"
+	bookLogic "github.com/dimasyudhana/alterra-group-project-2/service/book"
+
+	"github.com/labstack/echo/v4"
+)
+
+func main() {
+	e := echo.New()
+
+	cfg := config.InitConfiguration()
+	db, _ := config.GetConnection(cfg)
+	config.Migrate(db)
+
+	bookModel := bookRepo.New(db)
+	bookService := bookLogic.New(bookModel)
+	bookController := bookHandler.New(bookService)
+
+	routes.Route(e, bookController)
+
+	e.Start(":8080")
 }
