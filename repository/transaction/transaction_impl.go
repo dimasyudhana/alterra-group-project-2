@@ -46,9 +46,8 @@ func (t *transaction) FindMyTransaction(db *gorm.DB, uid int) ([]*entities.MyTra
 
 func (t *transaction) GetAllAvailableBooks(db *gorm.DB) ([]*entities.AvailableBookResponses, error) {
 	var res []*entities.AvailableBookResponses
-	rows := db.Model(&entities.Book{}).Select(`books.id, users.name, books.name , books.contents,books.image`).Where("transactions.submited_date IS NOT NULL").Joins(`
-	JOIN users on users.id = books.user_id 
-	`).Scan(&res)
+	rows := db.Model(&entities.Book{}).Select(`books.id, users.name, books.title , books.contents,books.image`).Where(`books.status`, "available").Joins(`
+	JOIN users on users.id = books.user_id`).Scan(&res)
 	if err := rows.Error; err != nil {
 		t.dep.Log.Errorf("Error Database: %v", err)
 		return nil, err
@@ -58,10 +57,11 @@ func (t *transaction) GetAllAvailableBooks(db *gorm.DB) ([]*entities.AvailableBo
 
 func (t *transaction) GetBorrowedBook(db *gorm.DB, uid int) ([]*entities.MyBookBorrowedResponses, error) {
 	var res []*entities.MyBookBorrowedResponses
-	rows := db.Model(&entities.Transaction{}).Where("transaction.submited_date IS NULL AND books.users_id = ?").Select(`books.id,transactions.end_date,users.name,books.image`).Joins(`
-	JOIN transaction_books on transaction_books.transaction_id = transaction.id 
-	JOIN books on books.id = transaction_books.book_id
-	`).Scan(&res)
+	rows := db.Model(&entities.Transaction{}).Where("transactions.submited_date IS NULL AND books.user_id = ?", uid).Select(`
+	books.id,transactions.end_date,users.name,books.title,books.image`).Joins(`
+	JOIN users on users.id = transactions.borrower_id
+	JOIN transaction_books on transaction_books.transaction_id = transactions.id 
+	JOIN books on books.id = transaction_books.book_id`).Scan(&res)
 	if err := rows.Error; err != nil {
 		t.dep.Log.Errorf("Error Database: %v", err)
 		return nil, err

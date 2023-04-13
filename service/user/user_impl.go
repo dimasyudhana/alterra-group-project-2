@@ -117,33 +117,45 @@ func (u *user) GetById(ctx context.Context, id int) (*entities.User, error) {
 }
 
 func (u *user) Update(ctx context.Context, req entities.UserReqUpdate, filehead *multipart.FileHeader, id int) error {
-	if err1 := u.validator.Struct(req); err1 != nil {
-		u.dep.Log.Errorf("Error Service : %v", err1)
-		return err.NewErr(err1.Error())
-	}
-	userd, err1 := u.repo.FindByEmail(u.dep.Db.WithContext(ctx), req.Email)
+
+	user := entities.User{}
+	userold, err1 := u.repo.FindById(u.dep.Db.WithContext(ctx), id)
+	user = *userold
 	if err1 != nil {
-		if !errors.Is(err1, gorm.ErrRecordNotFound) {
-			u.dep.Log.Errorf("Error Service : %v", err1)
-			return err.NewErrInter("Gagal mencari data user")
-		}
+		return err1
 	}
-	if req.Email != "" && req.Email != userd.Email {
-		if userd.Id != 0 {
-			return err.NewErr("Email sudah terdaftar!!!")
-		}
+	if req.Name != "" {
+		user.Name = req.Name
 	}
-	if userd.Password != req.Password {
-		passhash, err1 := helper.HashPassword(req.Password)
+	if req.Address != "" {
+		user.Address = req.Address
+	}
+	if req.Email != "" {
+		userd, err1 := u.repo.FindByEmail(u.dep.Db.WithContext(ctx), req.Email)
 		if err1 != nil {
-			u.dep.Log.Errorf("Error Service : %v", err1)
-			return err.NewErr("Gagal membuat akun")
+			if !errors.Is(err1, gorm.ErrRecordNotFound) {
+				u.dep.Log.Errorf("Error Service : %v", err1)
+				return err.NewErrInter("Gagal mencari data user")
+			}
 		}
-		req.Password = passhash
+		if userd.Email != "" && userold.Email != req.Email {
+			return err.NewErr("Email Sudah Terdaftar")
+		}
+		user.Email = req.Email
 	}
-	if filehead.Filename != req.Image {
+	if req.Password != "" {
+		if userold.Password != req.Password {
+			passhash, err1 := helper.HashPassword(req.Password)
+			if err1 != nil {
+				u.dep.Log.Errorf("Error Service : %v", err1)
+				return err.NewErr("Gagal membuat akun")
+			}
+			user.Password = passhash
+		}
+	}
+
+	if filehead != nil {
 		file, err1 := filehead.Open()
-		defer file.Close()
 		if err1 != nil {
 			u.dep.Log.Errorf("failed to open file", err1)
 			return err.NewErr("gagal memuat gambar")
@@ -155,16 +167,10 @@ func (u *user) Update(ctx context.Context, req entities.UserReqUpdate, filehead 
 			u.dep.Log.Errorf("Error Service : %v", err1)
 			return err.NewErr("Gagal membuat pada saat mengupload gambar")
 		}
-		req.Image = filename
+		user.Image = filename
+		file.Close()
 	}
-	user := entities.User{
-		Id:       uint(id),
-		Name:     req.Name,
-		Email:    req.Email,
-		Password: req.Password,
-		Image:    req.Image,
-		Address:  req.Address,
-	}
+
 	if err1 := u.repo.Update(u.dep.Db.WithContext(ctx), user); err1 != nil {
 		u.dep.Log.Errorf("Error Service : %v", err1)
 		return err.NewErrInter("Terjadi kesalahan pada server")

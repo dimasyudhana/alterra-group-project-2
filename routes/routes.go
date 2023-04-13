@@ -52,5 +52,7 @@ func (r *Routes) RegisterRoutes() {
 	/// Transactions
 	rauth.POST("/transactions", r.Trx.Createtrx)
 	rauth.GET("/transactions", r.Trx.MyTransaction)
+	rauth.GET("/transactions/books", r.Trx.GetAllAvailableBooks)
+	rauth.GET("/transactions/borrowed", r.Trx.GetAllBorrowedBook)
 
 }
