@@ -107,6 +107,32 @@ paths:
       security:
         - bearerAuth: []
 
+  /book/{id}:
+    get:
+      tags:
+        - Books
+      summary: Get book by id_book
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BookSchemaCreate'
+      responses:
+        '201':
+          $ref: '#/components/responses/Response200GetBookById'
+        '400':
+          $ref: '#/components/responses/Response400'
+        '401':
+          $ref: '#/components/responses/Unauthorized'  
+        '404':
+          $ref: '#/components/responses/Response404'
+        '500':
+          $ref: '#/components/responses/Response500'  
+      security:
+        - bearerAuth: []
+        - CSRFToken: [] 
+
   /users/books:
     get:
       summary: Get Books by User ID
@@ -312,6 +338,14 @@ components:
             example:
               code: 201
               message: "Success get a book"
+              data: 
+              - id: 1
+                title: Book 1
+                year: 2022
+                content: Once upon a midnight ... 
+                image: source/image/Book 1.png
+                status: available
+                username: peterzalai
     
     Response200AllBooks:
       description: Success get all book
@@ -689,7 +723,7 @@ components:
             example: 1
           title:
             type: string
-            example: Mastering Go to build professional utilities and concurrent servers and services
+            example: Book 1
           year:
             type: integer
             example: 2022

@@ -42,7 +42,7 @@ func (r *Routes) RegisterRoutes() {
 	rauth.POST("/books", r.Book.InsertBook, r.CSRFMiddlewareCustom)           //, middleware.JWT([]byte(config.JWTSecret)))
 	rauth.GET("/books", r.Book.GetAllBooks)                                   //, middleware.JWT([]byte(config.JWTSecret)))
 	rauth.GET("/books/:id", r.Book.GetBookByBookID)                           //, middleware.JWT([]byte(config.JWTSecret)))
-	rauth.PUT("/books/:id", r.Book.UpdateByBookID, r.CSRFMiddlewareCustom)    //, middleware.JWT([]byte(config.JWTSecret)))
+	rauth.PUT("/books/:id", r.Book.UpdateBook, r.CSRFMiddlewareCustom)        //, middleware.JWT([]byte(config.JWTSecret)))
 	rauth.DELETE("/books/:id", r.Book.DeleteByBookID, r.CSRFMiddlewareCustom) //, middleware.JWT([]byte(config.JWTSecret)))
 	/// User Area
 	rauth.GET("/users", r.User.GetById)

@@ -28,7 +28,6 @@ package book_test
 // 		Author:   "Test Author",
 // 		Contents: "Test Contents",
 // 		Image:    "Test Image",
-// 		User_ID:  uint(1),
 // 	}, nil)
 
 // 	bookService := book.New(mockRepo)

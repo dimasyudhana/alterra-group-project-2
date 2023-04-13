@@ -27,13 +27,13 @@ func New(repo book.Repository, dep dependecy.Depend) Service {
 	}
 }
 
-func (bm *BookModel) InsertBook(ctx context.Context, book entities.Core) (entities.Core, error) {
-	result, err := bm.repo.InsertBook(bm.dep.Db.WithContext(ctx), book)
+func (bm *BookModel) InsertBook(ctx context.Context, book entities.Core) error {
+	_, err := bm.repo.InsertBook(bm.dep.Db.WithContext(ctx), book)
 	if err != nil {
 		log.Errorf("terjadi kesalahan input buku: %v", err)
-		return entities.Core{}, errors.New("terdapat masalah pada server")
+		return errors.New("terdapat masalah pada server")
 	}
-	return result, nil
+	return nil
 }
 
 func (bm *BookModel) GetAllBooks(ctx context.Context) ([]entities.Core, error) {
@@ -49,7 +49,7 @@ func (bm *BookModel) GetBookByBookID(ctx context.Context, bookID uint) (entities
 	book, err := bm.repo.GetBookByBookID(bm.dep.Db.WithContext(ctx), bookID)
 	if err != nil {
 		log.Errorf("terjadi kesalahan saat mengambil data buku dengan ID %d: %v", bookID, err)
-		return entities.Core{}, errors.New("terdapat masalah pada server")
+		return book, errors.New("terdapat masalah pada server")
 	}
 	return book, nil
 }
