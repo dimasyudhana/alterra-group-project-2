@@ -18,7 +18,7 @@ func main() {
 	container.RunAll()
 	err := container.Container.Invoke(func(depend dependecy.Depend, ro routes.Routes) {
 		config.Migrate(depend.Config)
-		fmt.Println(depend.Gcp.BucketName)
+
 		var sig = make(chan os.Signal, 1)
 		signal.Notify(sig, syscall.SIGINT, syscall.SIGTERM)
 		ro.RegisterRoutes()
