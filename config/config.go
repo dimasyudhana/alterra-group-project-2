@@ -1,33 +1,47 @@
 package config
 
 import (
-	"fmt"
-
 	"github.com/spf13/viper"
 )
 
-type Configuration struct {
-	Host     string
-	Port     string
-	Username string
-	Password string
-	Name     string
+type Server struct {
+	Port string `mapstructure:"PORT"`
+}
+type DatabaseConfig struct {
+	Host     string `mapstructure:"HOST"`
+	Port     string `mapstructure:"PORT"`
+	Username string `mapstructure:"USERNAME"`
+	Password string `mapstructure:"PASSWORD"`
+	Name     string `mapstructure:"NAME"`
 }
 
-func InitConfiguration() Configuration {
+type GCPConfig struct {
+	Credential string `mapstructure:"CREDEN"`
+	PRJID      string `mapstructure:"PROJECTID"`
+	BCKNM      string `mapstructure:"BUCKETNAME"`
+	Path       string `mapstructure:"PATH"`
+}
+
+type Config struct {
+	Server     Server         `mapstructure:"SERVER"`
+	Database   DatabaseConfig `mapstructure:"DATABASE"`
+	JwtSecret  string         `mapstructure:"JWTSECRET"`
+	CSRFLength int            `mapstructure:"CSRFLENGTH"`
+	CSRFMode   string         `mapstructure:"CSRFMODE"`
+	GCP        GCPConfig      `mapstructure:"GCP"`
+}
+
+func InitConfiguration() (*Config, error) {
 	viper.SetConfigType("json")
 	viper.SetConfigName("config")
 	viper.AddConfigPath(".")
-	err := viper.ReadInConfig()
-	if err != nil {
-		panic(fmt.Errorf("fatal error config file: %s", err))
+	if err := viper.ReadInConfig(); err != nil {
+		return nil, err
 	}
-
-	return Configuration{
-		Host:     viper.GetString("Host"),
-		Port:     viper.GetString("Port"),
-		Username: viper.GetString("Username"),
-		Password: viper.GetString("Password"),
-		Name:     viper.GetString("Name"),
+	viper.AutomaticEnv()
+	var config Config
+	if err := viper.Unmarshal(&config); err != nil {
+		return nil, err
 	}
+	return &config, nil
 }
