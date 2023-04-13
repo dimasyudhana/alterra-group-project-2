@@ -15,12 +15,6 @@ type DatabaseConfig struct {
 	Name     string `mapstructure:"NAME"`
 }
 
-type RedisConfig struct {
-	Host     string `mapstructure:"HOST"`
-	Port     string `mapstructure:"PORT"`
-	Password string `mapstructure:"PASSWORD"`
-	Name     string `mapstructure:"NAME"`
-}
 type GCPConfig struct {
 	Credential string `mapstructure:"CREDEN"`
 	PRJID      string `mapstructure:"PROJECTID"`
@@ -31,7 +25,6 @@ type GCPConfig struct {
 type Config struct {
 	Server     Server         `mapstructure:"SERVER"`
 	Database   DatabaseConfig `mapstructure:"DATABASE"`
-	Redis      RedisConfig    `mapstructure:"REDIS"`
 	JwtSecret  string         `mapstructure:"JWTSECRET"`
 	CSRFLength int            `mapstructure:"CSRFLENGTH"`
 	CSRFMode   string         `mapstructure:"CSRFMODE"`

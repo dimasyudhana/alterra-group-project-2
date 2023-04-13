@@ -15,6 +15,7 @@ type Routes struct {
 	Depend dependecy.Depend
 	User   controller.User
 	Book   controller.BookController
+	Trx    controller.Trx
 }
 
 func (r *Routes) CSRFMiddlewareCustom(next echo.HandlerFunc) echo.HandlerFunc {
@@ -35,6 +36,7 @@ func (r *Routes) RegisterRoutes() {
 	ro.Use(middleware.RemoveTrailingSlash())
 	ro.Use(middleware.CORS())
 	ro.Use(middleware.Logger())
+	ro.Use(middleware.Recover())
 	ro.POST("/auth/login", r.User.Login)
 	ro.POST("/auth/register", r.User.Register)
 	/// Auth
@@ -46,5 +48,7 @@ func (r *Routes) RegisterRoutes() {
 	rauth.DELETE("/books/:id", r.Book.DeleteByBookID, r.CSRFMiddlewareCustom) //, middleware.JWT([]byte(config.JWTSecret)))
 	/// User Area
 	rauth.GET("/users", r.User.GetById)
-	rauth.PUT("/users", r.User.Update)
+	rauth.PUT("/users", r.User.Update, r.CSRFMiddlewareCustom)
+	/// Transactions
+	rauth.POST("/transaction", r.Trx.Createtrx)
 }

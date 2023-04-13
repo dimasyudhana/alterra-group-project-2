@@ -66,6 +66,7 @@ func (bm *BookModel) UpdateByBookID(ctx context.Context, bookID uint, updatedBoo
 	book.Author = updatedBook.Author
 	book.Contents = updatedBook.Contents
 	book.Image = string(updatedBook.Image)
+	book.Status = updatedBook.Status
 
 	if err := bm.repo.UpdateByBookID(bm.dep.Db.WithContext(ctx), bookID, updatedBook); err != nil {
 		log.Errorf("terjadi kesalahan saat update data buku dengan ID %d: %v", bookID, err)

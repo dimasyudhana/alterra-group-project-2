@@ -78,7 +78,9 @@ func (bm *BookModel) GetBookByBookID(db *gorm.DB, bookID uint) (entities.Core, e
 }
 
 func (um *BookModel) UpdateByBookID(db *gorm.DB, bookID uint, updatedBook entities.Book) error {
+	log.Println(bookID, "id")
 	book := entities.Book{}
+
 	if bookID == 0 {
 		return fmt.Errorf("Terjadi kesalahan input ID")
 	}
@@ -91,12 +93,16 @@ func (um *BookModel) UpdateByBookID(db *gorm.DB, bookID uint, updatedBook entiti
 		return err
 	}
 
-	book.Title = updatedBook.Title
-	book.Year = updatedBook.Year
-	book.Author = updatedBook.Author
-	book.Contents = updatedBook.Contents
-	book.Image = updatedBook.Image
-	book.UpdatedAt = time.Now()
+	if updatedBook.Title == "" && updatedBook.Year == "" {
+		book.Status = updatedBook.Status
+	} else {
+		book.Title = updatedBook.Title
+		book.Year = updatedBook.Year
+		book.Author = updatedBook.Author
+		book.Contents = updatedBook.Contents
+		book.Image = updatedBook.Image
+		book.UpdatedAt = time.Now()
+	}
 
 	if err := db.Save(&book).Error; err != nil {
 		log.Println("Terjadi error saat melakukan update daftar buku", err)

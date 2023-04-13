@@ -63,6 +63,7 @@ func (u *user) Register(ctx context.Context, req entities.UserReqRegister, fileh
 			return err.NewErrInter("Gagal mencari data user")
 		}
 	}
+
 	if userd.Id != 0 {
 		return err.NewErr("Email sudah terdaftar!!!")
 	}
@@ -126,8 +127,10 @@ func (u *user) Update(ctx context.Context, req entities.UserReqUpdate, filehead 
 			return err.NewErrInter("Gagal mencari data user")
 		}
 	}
-	if userd.Id != 0 {
-		return err.NewErr("Email sudah terdaftar!!!")
+	if req.Email != "" && req.Email != userd.Email {
+		if userd.Id != 0 {
+			return err.NewErr("Email sudah terdaftar!!!")
+		}
 	}
 	if userd.Password != req.Password {
 		passhash, err1 := helper.HashPassword(req.Password)
