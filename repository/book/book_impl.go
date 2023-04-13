@@ -25,7 +25,8 @@ func (bm *BookModel) InsertBook(db *gorm.DB, book entities.Core) (entities.Core,
 	insertBook.Year = book.Year
 	insertBook.Author = book.Author
 	insertBook.Contents = book.Contents
-	insertBook.Image = []byte(book.Image)
+	insertBook.Image = book.Image
+	insertBook.UserID = book.UserID
 
 	err := db.Table("books").Create(&insertBook).Error
 	if err != nil {
@@ -37,7 +38,7 @@ func (bm *BookModel) InsertBook(db *gorm.DB, book entities.Core) (entities.Core,
 
 func (bm *BookModel) GetAllBooks(db *gorm.DB) ([]entities.Core, error) {
 	var books []entities.Book
-	if err := db.Table("books").Where("deleted_at < ?", 0).Find(&books).Error; err != nil {
+	if err := db.Table("books").Find(&books).Error; err != nil {
 		log.Println("Terjadi error saat mengambil daftar buku", err.Error())
 		return nil, err
 	}
@@ -59,7 +60,7 @@ func (bm *BookModel) GetAllBooks(db *gorm.DB) ([]entities.Core, error) {
 
 func (bm *BookModel) GetBookByBookID(db *gorm.DB, bookID uint) (entities.Core, error) {
 	var book entities.Book
-	if err := db.Table("books").Where("id = ? AND deleted_at < ?", bookID, 0).First(&book).Error; err != nil {
+	if err := db.Table("books").Where("id = ?", bookID).First(&book).Error; err != nil {
 		log.Println("Terjadi error saat mengambil buku dengan ID", bookID, err.Error())
 		return entities.Core{}, err
 	}
@@ -81,6 +82,7 @@ func (um *BookModel) UpdateByBookID(db *gorm.DB, bookID uint, updatedBook entiti
 	if bookID == 0 {
 		return fmt.Errorf("Terjadi kesalahan input ID")
 	}
+
 	if err := db.First(&book, bookID).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return fmt.Errorf("ID buku %v tidak ditemukan", bookID)
@@ -90,8 +92,8 @@ func (um *BookModel) UpdateByBookID(db *gorm.DB, bookID uint, updatedBook entiti
 	}
 
 	book.Title = updatedBook.Title
-	book.Author = updatedBook.Author
 	book.Year = updatedBook.Year
+	book.Author = updatedBook.Author
 	book.Contents = updatedBook.Contents
 	book.Image = updatedBook.Image
 	book.UpdatedAt = time.Now()
