@@ -58,3 +58,12 @@ func (t *trx) Create(ctx context.Context, reqs []int, uid int) error {
 	}
 	return nil
 }
+
+func (t *trx) FindMyTransaction(ctx context.Context, uid int) ([]*entities.MyTransactionResponses, error) {
+	res, err := t.repo.FindMyTransaction(t.dep.Db.WithContext(ctx), uid)
+	if err != nil {
+		t.dep.Log.Errorf("Service : %v", err)
+		return nil, err
+	}
+	return res, nil
+}

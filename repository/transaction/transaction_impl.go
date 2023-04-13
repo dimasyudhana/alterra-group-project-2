@@ -31,11 +31,10 @@ func (t *transaction) InsertTrxBook(db *gorm.DB, req entities.TransactionBook) e
 	return nil
 }
 
-func (t *transaction) FindMyTransactionByUid(db *gorm.DB, uid int) ([]*entities.MyTransactionResponses, error) {
+func (t *transaction) FindMyTransaction(db *gorm.DB, uid int) ([]*entities.MyTransactionResponses, error) {
 	var res []*entities.MyTransactionResponses
 	rows := db.Model(&entities.Transaction{}).Select(`transactions.id
-	, transactions.end_date, 
-    users.name, books.title,books.contents,books.image`).Where("transactions.borrower_id = ? && transactions.submited_date IS NULL", uid).Joins(`
+	,transactions.end_date, users.name, books.title, books.contents, books.image`).Where("transactions.borrower_id = ? && transactions.submited_date IS NULL", uid).Joins(`
 	JOIN transaction_books on transaction_books.transaction_id = transactions.id 
 	JOIN books on books.id=transaction_books.book_id JOIN users on users.id = books.user_id`).Scan(&res)
 	if err := rows.Error; err != nil {

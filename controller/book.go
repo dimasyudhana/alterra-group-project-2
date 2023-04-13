@@ -3,6 +3,7 @@ package controller
 import (
 	"fmt"
 	"log"
+	"math"
 	"net/http"
 	"strconv"
 
@@ -204,9 +205,35 @@ func (bc *BookController) GetAllBooks(c echo.Context) error {
 		formattedBooks = append(formattedBooks, formattedBook)
 	}
 
+	page := c.QueryParam("page")
+	perPage := c.QueryParam("per_page")
+	if page != "" || perPage == "" {
+		perPage = "5"
+	}
+	pageInt := 1
+	if page != "" {
+		pageInt, _ = strconv.Atoi(page)
+	}
+	perPageInt, _ := strconv.Atoi(perPage)
+
+	total := len(formattedBooks)
+	totalPages := int(math.Ceil(float64(total) / float64(perPageInt)))
+
+	startIndex := (pageInt - 1) * perPageInt
+	endIndex := startIndex + perPageInt
+	if endIndex > total {
+		endIndex = total
+	}
+
+	data := formattedBooks[startIndex:endIndex]
+
 	return c.JSON(http.StatusOK, map[string]interface{}{
-		"code": http.StatusOK,
-		"data": formattedBooks,
+		"code":        http.StatusOK,
+		"page":        pageInt,
+		"per_page":    perPageInt,
+		"total_pages": totalPages,
+		"total_items": total,
+		"data":        data,
 	})
 }
 

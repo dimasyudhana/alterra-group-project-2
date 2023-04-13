@@ -47,12 +47,12 @@ type (
 		BookId        int `gorm:"not null"`
 	}
 	MyTransactionResponses struct {
-		Id              int       `json:"id"`
-		EndDate         time.Time `json:"end_date"`
-		BookOwner       string    `json:"book_owner"`
-		BookName        string    `json:"book_name"`
-		BookDescription string    `json:"book_description"`
-		BookImage       string    `json:"book_image"`
+		Id       int       `json:"id"`
+		EndDate  time.Time `json:"end_date"`
+		Name     string    `json:"book_owner"`
+		Title    string    `json:"book_name"`
+		Contents string    `json:"book_description"`
+		Image    string    `json:"book_image"`
 	}
 	MyBookBorrowedResponses struct {
 		Id           int       `json:"id"`

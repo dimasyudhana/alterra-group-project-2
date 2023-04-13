@@ -33,6 +33,7 @@ func (u *user) Login(ctx context.Context, req entities.UserReqLogin) (error, int
 	if err1 := u.validator.Struct(req); err1 != nil {
 		return err.NewErr(err1.Error()), 0
 	}
+	fmt.Println(req.Email)
 	user, err1 := u.repo.FindByEmail(u.dep.Db.WithContext(ctx), req.Email)
 	if user == nil || user.Email == "" {
 		return err.NewErr("Email belum Terdaftar"), 0
