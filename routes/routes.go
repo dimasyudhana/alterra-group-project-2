@@ -50,5 +50,7 @@ func (r *Routes) RegisterRoutes() {
 	rauth.GET("/users", r.User.GetById)
 	rauth.PUT("/users", r.User.Update, r.CSRFMiddlewareCustom)
 	/// Transactions
-	rauth.POST("/transaction", r.Trx.Createtrx)
+	rauth.POST("/transactions", r.Trx.Createtrx)
+	rauth.GET("/transactions", r.Trx.MyTransaction)
+
 }

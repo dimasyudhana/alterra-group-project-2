@@ -2,7 +2,9 @@ package controller
 
 import (
 	"fmt"
+	"math"
 	"net/http"
+	"strconv"
 
 	dependecy "github.com/dimasyudhana/alterra-group-project-2/config/dependcy"
 	"github.com/dimasyudhana/alterra-group-project-2/helper"
@@ -36,4 +38,42 @@ func (u *Trx) Createtrx(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, helper.CreateWebResponse(http.StatusBadRequest, err.Error(), nil))
 	}
 	return c.JSON(http.StatusOK, helper.CreateWebResponse(http.StatusOK, "Successful Operation", nil))
+}
+
+func (u *Trx) MyTransaction(c echo.Context) error {
+	uid := helper.GetUid(c.Get("user").(*jwt.Token))
+	res, err := u.Service.FindMyTransaction(c.Request().Context(), uid)
+	if err != nil {
+		u.Dep.Log.Errorf("controller : %v", err)
+		return c.JSON(http.StatusBadRequest, helper.CreateWebResponse(http.StatusBadRequest, err.Error(), nil))
+	}
+	page := c.QueryParam("page")
+	perPage := c.QueryParam("per_page")
+
+	total := len(res)
+	pageInt := 1
+	if page != "" || perPage == "" {
+		perPage = "len"
+		pageInt, _ = strconv.Atoi(page)
+	}
+	perPageInt, _ := strconv.Atoi(perPage)
+
+	totalPages := int(math.Ceil(float64(total) / float64(perPageInt)))
+
+	startIndex := (pageInt - 1) * perPageInt
+	endIndex := startIndex + perPageInt
+	if endIndex > total {
+		endIndex = total
+	}
+
+	data := res[startIndex:endIndex]
+
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"code":        http.StatusOK,
+		"page":        pageInt,
+		"per_page":    perPageInt,
+		"total_pages": totalPages,
+		"csrf":        c.Get("csrf").(string),
+		"data":        data,
+	})
 }
