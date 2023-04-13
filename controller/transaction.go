@@ -53,7 +53,6 @@ func (u *Trx) MyTransaction(c echo.Context) error {
 	total := len(res)
 	pageInt := 1
 	if page != "" || perPage == "" {
-		perPage = "len"
 		pageInt, _ = strconv.Atoi(page)
 	}
 	perPageInt, _ := strconv.Atoi(perPage)
@@ -73,7 +72,77 @@ func (u *Trx) MyTransaction(c echo.Context) error {
 		"page":        pageInt,
 		"per_page":    perPageInt,
 		"total_pages": totalPages,
-		"csrf":        c.Get("csrf").(string),
+		"data":        data,
+	})
+}
+
+func (u *Trx) GetAllAvailableBooks(c echo.Context) error {
+	res, err := u.Service.GetAllAvailableBooks(c.Request().Context())
+	if err != nil {
+		u.Dep.Log.Errorf("controller : %v", err)
+		return c.JSON(http.StatusBadRequest, helper.CreateWebResponse(http.StatusBadRequest, err.Error(), nil))
+	}
+	page := c.QueryParam("page")
+	perPage := c.QueryParam("per_page")
+
+	total := len(res)
+	pageInt := 1
+	if page != "" || perPage == "" {
+		pageInt, _ = strconv.Atoi(page)
+	}
+	perPageInt, _ := strconv.Atoi(perPage)
+
+	totalPages := int(math.Ceil(float64(total) / float64(perPageInt)))
+
+	startIndex := (pageInt - 1) * perPageInt
+	endIndex := startIndex + perPageInt
+	if endIndex > total {
+		endIndex = total
+	}
+
+	data := res[startIndex:endIndex]
+
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"code":        http.StatusOK,
+		"page":        pageInt,
+		"per_page":    perPageInt,
+		"total_pages": totalPages,
+		"data":        data,
+	})
+}
+
+func (u *Trx) GetAllBorrowedBook(c echo.Context) error {
+	uid := helper.GetUid(c.Get("user").(*jwt.Token))
+	res, err := u.Service.GetAllBorrowedBooks(c.Request().Context(), uid)
+	if err != nil {
+		u.Dep.Log.Errorf("controller : %v", err)
+		return c.JSON(http.StatusBadRequest, helper.CreateWebResponse(http.StatusBadRequest, err.Error(), nil))
+	}
+	page := c.QueryParam("page")
+	perPage := c.QueryParam("per_page")
+
+	total := len(res)
+	pageInt := 1
+	if page != "" || perPage == "" {
+		pageInt, _ = strconv.Atoi(page)
+	}
+	perPageInt, _ := strconv.Atoi(perPage)
+
+	totalPages := int(math.Ceil(float64(total) / float64(perPageInt)))
+
+	startIndex := (pageInt - 1) * perPageInt
+	endIndex := startIndex + perPageInt
+	if endIndex > total {
+		endIndex = total
+	}
+
+	data := res[startIndex:endIndex]
+
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"code":        http.StatusOK,
+		"page":        pageInt,
+		"per_page":    perPageInt,
+		"total_pages": totalPages,
 		"data":        data,
 	})
 }
