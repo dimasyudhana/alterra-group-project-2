@@ -67,3 +67,21 @@ func (t *trx) FindMyTransaction(ctx context.Context, uid int) ([]*entities.MyTra
 	}
 	return res, nil
 }
+
+func (t *trx) GetAllAvailableBooks(ctx context.Context) ([]*entities.AvailableBookResponses, error) {
+	res, err := t.repo.GetAllAvailableBooks(t.dep.Db.WithContext(ctx))
+	if err != nil {
+		t.dep.Log.Errorf("Service : %v", err)
+		return nil, err
+	}
+	return res, nil
+}
+
+func (t *trx) GetAllBorrowedBooks(ctx context.Context, uid int) ([]*entities.MyBookBorrowedResponses, error) {
+	res, err := t.repo.GetBorrowedBook(t.dep.Db.WithContext(ctx), uid)
+	if err != nil {
+		t.dep.Log.Errorf("Service : %v", err)
+		return nil, err
+	}
+	return res, nil
+}

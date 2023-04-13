@@ -55,18 +55,18 @@ type (
 		Image    string    `json:"book_image"`
 	}
 	MyBookBorrowedResponses struct {
-		Id           int       `json:"id"`
-		EndDate      time.Time `json:"end_date"`
-		BorrowerName string    `json:"borrower_name"`
-		BookName     string    `json:"book_name"`
-		BookImage    string    `json:"book_image"`
+		Id      int       `json:"id"`
+		EndDate time.Time `json:"end_date"`
+		Name    string    `json:"borrower_name"`
+		Title   string    `json:"book_name"`
+		Image   string    `json:"book_image"`
 	}
 	AvailableBookResponses struct {
-		Id           int    `json:"id"`
-		BookOwner    string `json:"book_owner"`
-		BookName     string `json:"book_name"`
-		BookContents string `json:"contents"`
-		BookImage    string `json:"book_image"`
+		Id       int    `json:"id"`
+		Name     string `json:"book_owner"`
+		Title    string `json:"book_name"`
+		Contents string `json:"book_contents"`
+		Image    string `json:"book_image"`
 	}
 	WebResponse struct {
 		Code    int    `json:"code"`
