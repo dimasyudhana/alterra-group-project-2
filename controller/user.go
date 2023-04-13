@@ -85,9 +85,11 @@ func (u *User) Update(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, helper.CreateWebResponse(http.StatusBadRequest, "Bad Request", nil))
 	}
 	file, err1 := c.FormFile("image")
-	if err1 != nil {
-		u.Dep.Log.Errorf("Controller : %v", err1)
-		return c.JSON(http.StatusBadRequest, helper.CreateWebResponse(http.StatusBadRequest, "Bad Request", nil))
+	if file != nil {
+		if err1 == nil {
+			u.Dep.Log.Errorf("Controller : %v", err1)
+			return c.JSON(http.StatusBadRequest, helper.CreateWebResponse(http.StatusBadRequest, "Bad Request", nil))
+		}
 	}
 	if err1 := u.Service.Update(c.Request().Context(), req, file, uid); err1 != nil {
 		u.Dep.Log.Errorf("Controller : %v", err1)
